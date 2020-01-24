@@ -1,0 +1,100 @@
+{
+  "type": "index",
+  "spec": {
+    "dataSchema": {
+      "dataSource": "nfdump",
+      "parser": {
+        "type": "string",
+        "parseSpec": {
+          "format": "tsv",
+          "timestampSpec": {
+            "column": "last",
+            "format": "posix"
+          },
+          "dimensionsSpec": {
+            "dimensions": []
+          },
+          "hasHeaderRow": true,
+          "delimiter": ";"
+        }
+      },
+      "metricsSpec": [
+        {
+          "type": "count",
+          "name": "count"
+        },
+        {
+          "type": "longSum",
+          "name": "sum_bytes",
+          "fieldName": "bytes",
+          "expression": null
+        }
+      ],
+      "granularitySpec": {
+        "type": "uniform",
+        "segmentGranularity": "HOUR",
+        "queryGranularity": "MINUTE",
+        "rollup": true,
+        "intervals": null
+      },
+      "transformSpec": {
+        "filter": null,
+        "transforms": []
+      }
+    },
+    "ioConfig": {
+      "type": "index",
+      "firehose": {
+        "type": "local",
+        "baseDir": "/home/igorm/work/nfdump",
+        "filter": "${file:name}.gz",
+        "parser": null
+      },
+      "appendToExisting": true
+    },
+    "tuningConfig": {
+      "type": "index",
+      "maxRowsPerSegment": 24000000,
+      "maxRowsInMemory": 1999999,
+      "maxBytesInMemory": 0,
+      "maxTotalRows": 20000000,
+      "numShards": null,
+      "partitionDimensions": [],
+      "partitionsSpec": {
+        "type": "dynamic",
+        "maxRowsPerSegment": 24000000,
+        "maxTotalRows": 20000000
+      },
+      "indexSpec": {
+        "bitmap": {
+          "type": "concise"
+        },
+        "dimensionCompression": "lz4",
+        "metricCompression": "lz4",
+        "longEncoding": "longs"
+      },
+      "indexSpecForIntermediatePersists": {
+        "bitmap": {
+          "type": "concise"
+        },
+        "dimensionCompression": "lz4",
+        "metricCompression": "lz4",
+        "longEncoding": "longs"
+      },
+      "maxPendingPersists": 0,
+      "forceGuaranteedRollup": false,
+      "reportParseExceptions": false,
+      "pushTimeout": 0,
+      "segmentWriteOutMediumFactory": null,
+      "logParseExceptions": false,
+      "maxParseExceptions": 2147483647,
+      "maxSavedParseExceptions": 0,
+      "buildV9Directly": true
+    }
+  },
+  "context": {
+    "forceTimeChunkLock": true
+  },
+  "groupId": "index_append_nfdump_${file:name}",
+  "dataSource": "nfdump"
+}
