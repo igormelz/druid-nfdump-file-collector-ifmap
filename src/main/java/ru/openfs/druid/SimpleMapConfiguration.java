@@ -8,11 +8,12 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @ApplicationScoped
 public class SimpleMapConfiguration {
-    @ConfigProperty(name="simplemap.uplink")
-    String uplink;
 
-    @ConfigProperty(name="simplemap.protocol")
-    String protocol;
+    @ConfigProperty(name="map.uplink.spec")
+    public String uplink;
+
+    @ConfigProperty(name="map.protocol.spec")
+    public String protocol;
 
     @Produces
     @Named("uplink")

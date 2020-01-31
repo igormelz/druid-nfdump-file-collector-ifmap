@@ -46,8 +46,8 @@
       "type": "index",
       "firehose": {
         "type": "local",
-        "baseDir": "/home/igorm/work/nfdump",
-        "filter": "${file:name}.gz",
+        "baseDir": "${header.baseDir}",
+        "filter": "${file:name}",
         "parser": null
       },
       "appendToExisting": true
@@ -95,6 +95,6 @@
   "context": {
     "forceTimeChunkLock": true
   },
-  "groupId": "index_append_nfdump_${file:name}",
+  "groupId": "index_append_nfdump",
   "dataSource": "nfdump"
 }

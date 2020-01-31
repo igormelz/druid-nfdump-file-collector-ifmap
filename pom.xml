@@ -9,10 +9,10 @@
     <relativePath></relativePath>
   </parent>
   <groupId>ru.openfs.druid</groupId>
-  <artifactId>nfdump-druid-collector</artifactId>
+  <artifactId>druid-nfdump-collector</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>Camel Quarkus :: Examples :: Rest Json</name>
-  <description>Camel Quarkus Example :: Rest Json</description>
+  <name>OpenFS :: Druid NFDUMP File Collector</name>
+  <description>ETL service for ingest nfdump netflow files to druid datastore</description>
   <dependencies>
     <dependency>
       <groupId>org.apache.camel.quarkus</groupId>
@@ -28,6 +28,10 @@
     </dependency>
     <dependency>
       <groupId>org.apache.camel.quarkus</groupId>
+      <artifactId>camel-quarkus-seda</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel.quarkus</groupId>
       <artifactId>camel-quarkus-exec</artifactId>
     </dependency>
     <dependency>
@@ -40,10 +44,22 @@
       <version>3.0.0</version>
     </dependency>
     <dependency>
+      <groupId>org.apache.camel.quarkus</groupId>
+      <artifactId>camel-quarkus-jsonpath</artifactId>
+      <version>1.1.0.fuse-jdk11-800011</version>
+    </dependency>
+    <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-scheduler</artifactId>
     </dependency>
   </dependencies>
+  <repositories>
+    <repository>
+      <id>jboss-repo</id>
+      <url>https://repository.jboss.org/nexus/content/repositories/ea/</url>
+      <!-- <url>http://repository.jboss.org/nexus/content/groups/public/</url> -->
+    </repository>
+  </repositories>
   <build>
     <plugins>
       <plugin>

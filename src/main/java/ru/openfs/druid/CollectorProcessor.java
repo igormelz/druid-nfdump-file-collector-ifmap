@@ -32,23 +32,23 @@ public class CollectorProcessor implements Processor {
     private static final Logger LOG = LoggerFactory.getLogger(CollectorProcessor.class);
     private static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
 
-    @ConfigProperty(name = "collector.output.Delimiter", defaultValue = ";")
+    @ConfigProperty(name = "output.delimiter", defaultValue = ";")
     String outputDelimiter;
 
-    @ConfigProperty(name = "collector.output.tmpdir", defaultValue = ".tmp")
+    @ConfigProperty(name = "output.tmpdir", defaultValue = ".tmp")
     String outputDir;
 
-    @ConfigProperty(name = "collector.parser.spec")
-    String[] parserSpec;
+    @ConfigProperty(name = "output.header", defaultValue = "true")
+    boolean printHeader;
 
-    @ConfigProperty(name = "collector.output.spec")
+    @ConfigProperty(name = "output.spec")
     String[] outputSpec;
 
-    @ConfigProperty(name = "collector.parser.Delimiter", defaultValue = "\\|")
-    String parserDelimiter;
+    @ConfigProperty(name = "parser.spec")
+    String[] parserSpec;
 
-    @ConfigProperty(name = "collector.output.header", defaultValue = "true")
-    boolean printHeader;
+    @ConfigProperty(name = "parser.delimiter", defaultValue = "\\|")
+    String parserDelimiter;
 
     @Inject
     @Named("uplink")

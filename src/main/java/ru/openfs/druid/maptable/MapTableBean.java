@@ -40,7 +40,7 @@ public class MapTableBean extends ServiceSupport implements Processor, Predicate
 	public static final String MAP_VALUES = "MapTable.MapValues";
 
 	String mapFileURL;
-	private URL mapURL;
+	URL mapURL;
 	Pattern pattern;
 	int[] keyColumnIndex;
 	int[] dataColumnIndex;
