@@ -33,7 +33,7 @@ public class CollectorRoutes extends RouteBuilder {
 
     @ConfigProperty(name = "coordinator.url", defaultValue = "http://localhost:8081")
     String druid;
-
+    
     @Override
     public void configure() throws Exception {
 
@@ -45,7 +45,7 @@ public class CollectorRoutes extends RouteBuilder {
             .simple(nfdumpArgs + " ${date:now-5m:yyyy/MM/dd}/nfcapd.${date:now-5m:yyyyMMddHHmm}")
             
             // call commend to export file
-            .log("starting export nfdump ${header.CamelExecCommandArgs}")
+            .log("starting export nfdump")
             .toF("exec:%s", nfdumpCmd)
             .log("export done");
 
@@ -103,8 +103,6 @@ public class CollectorRoutes extends RouteBuilder {
             // wait 15 seconds
             .delay(15000)
         .end();
-
-        from("direct:mapCustomer").id("customerLookup").process("customer");
 
     }
 }

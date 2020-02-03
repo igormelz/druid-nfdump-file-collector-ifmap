@@ -15,10 +15,11 @@ public class SimpleMap {
     }
 
     public String get(String key) {
-        if (this.map.containsKey(key)) {
-            return this.map.get(key);
-        }
-        return key;
+        return map.get(key);
+    }
+
+    public boolean find(String key) {
+        return map.containsKey(key);
     }
 
 }
