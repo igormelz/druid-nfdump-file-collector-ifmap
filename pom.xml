@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.apache.camel.quarkus</groupId>
     <artifactId>camel-quarkus-bom</artifactId>
-    <version>1.0.0-M2</version>
+    <version>1.0.0-M3</version>
     <relativePath></relativePath>
   </parent>
 
@@ -35,6 +35,10 @@
       <groupId>org.apache.camel.quarkus</groupId>
       <artifactId>camel-quarkus-direct</artifactId>
     </dependency>
+        <dependency>
+      <groupId>org.apache.camel.quarkus</groupId>
+      <artifactId>camel-quarkus-seda</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.apache.camel.quarkus</groupId>
       <artifactId>camel-quarkus-exec</artifactId>
@@ -48,13 +52,14 @@
       <artifactId>camel-quarkus-ftp</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.camel.quarkus</groupId>
-      <artifactId>camel-quarkus-zipfile</artifactId>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-zip-deflater</artifactId>
+      <version>3.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.camel.quarkus</groupId>
       <artifactId>camel-quarkus-jsonpath</artifactId>
-      <version>1.1.0.fuse-jdk11-800011</version>
+      <!-- <version>1.1.0.fuse-jdk11-800011</version> -->
     </dependency>
     <dependency>
       <groupId>org.apache.camel.quarkus</groupId>
@@ -65,13 +70,12 @@
       <artifactId>quarkus-scheduler</artifactId>
     </dependency>
   </dependencies>
-  <repositories>
+  <!-- <repositories>
     <repository>
       <id>jboss-repo</id>
       <url>https://repository.jboss.org/nexus/content/repositories/ea/</url>
-      <!-- <url>http://repository.jboss.org/nexus/content/groups/public/</url> -->
     </repository>
-  </repositories>
+  </repositories> -->
   <build>
     <plugins>
       <plugin>

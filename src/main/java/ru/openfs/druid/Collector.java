@@ -83,7 +83,7 @@ public class Collector implements Processor {
                     // process parsed record
                     producer.sendBody("direct:recordProc", columns);
                     if(columns.containsKey("customer")) {
-                        columns.put("ref",exchange.getIn().getHeader("CamelFileName", String.class));
+                        // columns.put("ref",exchange.getIn().getHeader("CamelFileName", String.class));
                         // store record
                         writeRecord(columns, writer);
                         count++;
