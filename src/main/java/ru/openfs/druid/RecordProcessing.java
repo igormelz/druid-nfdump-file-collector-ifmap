@@ -27,7 +27,7 @@ public class RecordProcessing extends RouteBuilder {
     @Override
     public void configure() throws Exception {
 
-        from("direct:recordProc").id("ProcessingRecord")
+        from("direct:recordProc").id("NetflowProcessing")
                 // process flow direction
                 .process().exchange(e -> {
 

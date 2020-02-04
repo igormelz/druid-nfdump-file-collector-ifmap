@@ -38,7 +38,7 @@ public class CollectorRoutes extends RouteBuilder {
     public void configure() throws Exception {
 
         // scheduled 5 min call nfdump to dump netflow file in pipe format
-        from("direct:nfdump").id("nfdump")
+        from("direct:nfdump").id("CommandFileSource")
             
             // format agrs 
             .setHeader("CamelExecCommandArgs")
@@ -51,7 +51,7 @@ public class CollectorRoutes extends RouteBuilder {
 
         // collect netflow files from nfdump server
         fromF("sftp://%s?privateKeyFile=%s&localWorkDirectory=nfdump&delete=true&sortBy=file:name", source, keyFile)
-            .streamCaching("true").id("processing")
+            .streamCaching("true").id("FileCollector")
             
             // process netflow records
             .log("starting process netflow ${file:name}")
@@ -65,7 +65,7 @@ public class CollectorRoutes extends RouteBuilder {
             .log("wrote processed file to:${header.CamelFileNameProduced}");
 
         // delivery to druid cluster
-        from("file:out?delete=true").id("loader")
+        from("file:out?delete=true").id("Datastore")
             .onCompletion()
                 // parse index.json 
                 .setHeader("baseDir",constant(baseDir))
@@ -89,7 +89,7 @@ public class CollectorRoutes extends RouteBuilder {
             .toF("sftp://%s?privateKeyFile=%s&tempPrefix=tmp/", destination, keyFile)
             .log("delivered to:${header.CamelFileNameProduced}");
 
-        from("seda:monitorTaskStatus").id("monitor")
+        from("seda:monitorTaskStatus").id("DruidTaskMonitor")
             .loopDoWhile(and(header("task").isNotNull(),
                     header("status").isNotEqualTo("SUCCESS")))
             // get status
