@@ -7,29 +7,28 @@
 #
 # Then, build the image with:
 #
-# docker build -f src/main/docker/Dockerfile.jvm -t quarkus/code-with-quarkus-jvm .
+# docker build -f src/main/docker/Dockerfile.jvm -t openfs/druid-nfdump .
 #
 # Then run the container using:
 #
-# docker run -i --rm -p 8080:8080 quarkus/code-with-quarkus-jvm
+# docker run -d --rm -v /path/config:/deployments/config:ro -v /etc/timezone:/etc/timezone:ro -v /etc/localtime:/etc/localtime:ro openfs/druid-nfdump 
 #
 ###
 FROM fabric8/java-alpine-openjdk11-jre:1.6
 ENV JAVA_OPTIONS="-Djava.util.logging.manager=org.jboss.logmanager.LogManager"
 ENV AB_OFF=no_jmx
 
+# install ssh
 RUN apk --update --no-cache add openssh 
 
-# copy id_pub 
+# create config dir 
 RUN mkdir /deployments/config
 
 # use username for ssh
-#RUN adduser -G root --no-create-home --disabled-password 1001 \
 RUN adduser -G root --disabled-password openfs \
   && chown -R openfs /deployments \
   && chmod -R "g+rwX" /deployments \
   && chown -R openfs:root /deployments
-
 
 COPY lib/* /deployments/lib/
 COPY *-runner.jar /deployments/app.jar
@@ -37,7 +36,7 @@ COPY *-runner.jar /deployments/app.jar
 # publish config dir 
 VOLUME /deployments/config 
 
-# run with user 1001
+# run with user openfs
 USER openfs
 
 ENTRYPOINT [ "/deployments/run-java.sh" ]
