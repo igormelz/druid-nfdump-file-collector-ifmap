@@ -95,6 +95,6 @@
   "context": {
     "forceTimeChunkLock": true
   },
-  "groupId": "index_append_nfdump",
-  "dataSource": "nfdump"
+  "groupId": "index_append_dpi",
+  "dataSource": "dpi"
 }

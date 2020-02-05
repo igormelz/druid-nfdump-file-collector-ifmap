@@ -36,6 +36,9 @@ public class CollectorRoutes extends RouteBuilder {
     @ConfigProperty(name = "coordinator.url", defaultValue = "http://localhost:8081")
     String druid;
 
+    @ConfigProperty(name = "datastore.enable", defaultValue = "true")
+    String datastoreEnable;
+
     @Override
     public void configure() throws Exception {
 
@@ -43,8 +46,7 @@ public class CollectorRoutes extends RouteBuilder {
         from("direct:nfdump").id("CommandFileSource")
             
             // format agrs 
-            .setHeader("CamelExecCommandArgs")
-            .simple(nfdumpArgs + " ${date:now-5m:yyyy/MM/dd}/nfcapd.${date:now-5m:yyyyMMddHHmm}")
+            .setHeader("CamelExecCommandArgs").simple(nfdumpArgs)
             
             // call commend to export file
             .log("starting export nfdump")
@@ -68,7 +70,7 @@ public class CollectorRoutes extends RouteBuilder {
             .log("wrote processed file to:${header.CamelFileNameProduced}");
 
         // delivery to druid cluster
-        from("file:out?delete=true").autoStartup(true).id("Datastore")
+        from("file:out?delete=true").autoStartup(datastoreEnable).id("Datastore")
             .onCompletion()
                 // parse index.json 
                 .setHeader("baseDir",constant(baseDir))
