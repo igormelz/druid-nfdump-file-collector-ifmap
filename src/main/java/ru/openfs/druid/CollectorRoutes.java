@@ -5,7 +5,9 @@ import javax.enterprise.context.ApplicationScoped;
 import org.apache.camel.builder.RouteBuilder;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+
 import static org.apache.camel.builder.PredicateBuilder.and;
+
 
 @ApplicationScoped
 public class CollectorRoutes extends RouteBuilder {
@@ -33,7 +35,7 @@ public class CollectorRoutes extends RouteBuilder {
 
     @ConfigProperty(name = "coordinator.url", defaultValue = "http://localhost:8081")
     String druid;
-    
+
     @Override
     public void configure() throws Exception {
 
@@ -53,10 +55,11 @@ public class CollectorRoutes extends RouteBuilder {
         fromF("sftp://%s?privateKeyFile=%s&localWorkDirectory=nfdump&delete=true&sortBy=file:name", source, keyFile)
             .streamCaching("true").id("FileCollector")
             
-            // process netflow records
-            .log("starting process netflow ${file:name}")
-            .process("collector")
-            
+            // process netflow file records
+            .log("starting process file:${file:name}")
+            .process("fileProc")
+            .log("processed ${header.AggregatedCount} records in ${header.AggregatedMillis} ms")
+
             // compress output file 
             .marshal().gzipDeflater()
             
@@ -65,7 +68,7 @@ public class CollectorRoutes extends RouteBuilder {
             .log("wrote processed file to:${header.CamelFileNameProduced}");
 
         // delivery to druid cluster
-        from("file:out?delete=true").id("Datastore")
+        from("file:out?delete=true").autoStartup(true).id("Datastore")
             .onCompletion()
                 // parse index.json 
                 .setHeader("baseDir",constant(baseDir))
@@ -89,6 +92,7 @@ public class CollectorRoutes extends RouteBuilder {
             .toF("sftp://%s?privateKeyFile=%s&tempPrefix=tmp/", destination, keyFile)
             .log("delivered to:${header.CamelFileNameProduced}");
 
+        // monitor task processing status 
         from("seda:monitorTaskStatus").id("DruidTaskMonitor")
             .loopDoWhile(and(header("task").isNotNull(),
                     header("status").isNotEqualTo("SUCCESS")))
@@ -103,6 +107,10 @@ public class CollectorRoutes extends RouteBuilder {
             // wait 15 seconds
             .delay(15000)
         .end();
+
+        // process record 
+        from("direct:recordProc").id("NetflowRecordProcessor")
+            .process("netflowRecord").process("lookupCustomer");
 
     }
 }

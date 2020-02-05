@@ -1,7 +1,5 @@
 package ru.openfs.druid.maptable;
 
-import ru.openfs.druid.IPUtils;
-
 public class IpAddrTester extends ColumnTester {
 	private final int network;
 	private final int netmask;
@@ -16,10 +14,10 @@ public class IpAddrTester extends ColumnTester {
 		try {
 			int i = subnet.indexOf("/");
 			if (i == -1) {
-				this.network = IPUtils.aton(subnet);
+				this.network = IPUtil.aton(subnet);
 				this.netmask = -1;
 			} else {
-				int ipAddress = IPUtils.aton(subnet.substring(0, i));
+				int ipAddress = IPUtil.aton(subnet.substring(0, i));
 				int j = Integer.parseInt(subnet.substring(i + 1));
 				this.netmask = (-1 << 32 - j);
 				this.network = ipAddress & this.netmask;
@@ -37,7 +35,7 @@ public class IpAddrTester extends ColumnTester {
 		int ipv4 = 0;
 		if (ipaddr.indexOf(".") > 0) {
 			try {
-				ipv4 = IPUtils.aton(ipaddr);
+				ipv4 = IPUtil.aton(ipaddr);
 			} catch (NumberFormatException localNumberFormatException) {
 				return false;
 			}

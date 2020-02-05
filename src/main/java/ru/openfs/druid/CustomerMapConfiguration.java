@@ -39,7 +39,7 @@ public class CustomerMapConfiguration {
     long reloadInterval;
 
     @Produces
-    @Named("customer")
+    @Named("lookupCustomer")
     public MapTableBean getTable() {
         MapTableBean map = new MapTableBean();
         map.setMapFileURL(mapFileUrl);

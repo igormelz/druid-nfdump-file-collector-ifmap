@@ -27,9 +27,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
-@Named("collector")
-public class Collector implements Processor {
-    private static final Logger LOG = LoggerFactory.getLogger(Collector.class);
+@Named("fileProc")
+public class FileProcessor implements Processor {
+    private static final Logger LOG = LoggerFactory.getLogger(FileProcessor.class);
     private static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
 
     @ConfigProperty(name = "output.delimiter", defaultValue = ";")
@@ -57,7 +57,7 @@ public class Collector implements Processor {
     public void process(Exchange exchange) throws Exception {
 
         // reset counter records
-        int count = 0;
+        long count = 0L;
         long startProc = System.currentTimeMillis();
 
         // create temp output file
@@ -70,39 +70,35 @@ public class Collector implements Processor {
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(exchange.getIn().getMandatoryBody(InputStream.class), UTF8_CHARSET));
                 BufferedWriter writer = Files.newBufferedWriter(output.toPath(), StandardOpenOption.APPEND)) {
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-                if (count == 0 && printHeader) {
-                    // print Header
-                    writer.write(String.join(outputDelimiter, outputSpec));
-                    writer.newLine();
-                    count++;
-                } else {
-                    // parse line
-                    Map<String, String> columns = parse(line);
-                    // process parsed record
-                    producer.sendBody("direct:recordProc", columns);
-                    if(columns.containsKey("customer")) {
-                        // columns.put("ref",exchange.getIn().getHeader("CamelFileName", String.class));
-                        // store record
-                        writeRecord(columns, writer);
-                        count++;
-                    } else {
-                        LOG.error("Skip record:{}", line);
-                    }
-                }
+            if (printHeader) {
+                writer.write(String.join(outputDelimiter, outputSpec));
+                writer.newLine();
             }
+            count = reader.lines().parallel().map(this::parse).map(record -> {
+                try {
+                    producer.sendBody("direct:recordProc", record);
+                    if (record.containsKey("customer")) {
+                        writeRecord(record, writer);
+                        return record;
+                    } else {
+                        LOG.warn("skip record:{}", record);
+                        return null;
+                    }
+                } catch (IOException e) {
+                    LOG.error("IO Exeption:{}", e);
+                    return null;
+                } catch (CamelExecutionException e) {
+                    LOG.error("CamelException:{}", e);
+                    return null;
+                }
+            }).filter(record -> record != null).count();
         } catch (IOException x) {
             LOG.error("IOException:{}", x);
             return;
-        } catch (CamelExecutionException e) {
-            LOG.error("CamelException:{}", e);
-            return;
         }
-        LOG.info("Aggregated {} records in {} ms", count, System.currentTimeMillis() - startProc);
-        // return
         exchange.getIn().setBody(output, File.class);
-        exchange.getIn().setHeader("OutputCounter", count);
+        exchange.getIn().setHeader("AggregatedCount", count);
+        exchange.getIn().setHeader("AggregatedMillis", System.currentTimeMillis() - startProc);
         exchange.addOnCompletion(new CleanupTempFile(output));
     }
 
@@ -121,7 +117,6 @@ public class Collector implements Processor {
     }
 
     private void writeRecord(Map<String, String> columns, BufferedWriter writer) throws IOException {
-
         StringBuilder answer = new StringBuilder();
         for (int i = 0; i < outputSpec.length; i++) {
             if (columns.containsKey(outputSpec[i])) {

@@ -17,9 +17,4 @@ public class CollectorScheduler {
         producer.sendBody("direct:nfdump",null);
     }
 
-    // @Scheduled(every = "15m")
-    // public void loadMap() {
-    //     String sql = "select concat('IPADDR@',network_net),concat(replace(trim(int_title),'\"',''),' (',trim(weblogin),')'),serv_status,net_vlan from customer_user_internet";
-    //     producer.sendBody("direct:loadMap",sql);
-    // }
 }

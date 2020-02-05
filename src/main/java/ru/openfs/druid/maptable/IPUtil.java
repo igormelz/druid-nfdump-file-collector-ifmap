@@ -1,9 +1,9 @@
-package ru.openfs.druid;
+package ru.openfs.druid.maptable;
 
 import java.util.StringTokenizer;
 
 
-public class IPUtils {
+public class IPUtil {
 
 	public final static int aton(String ipaddr) throws NumberFormatException {
 
