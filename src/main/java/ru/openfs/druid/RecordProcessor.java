@@ -24,8 +24,8 @@ public class RecordProcessor implements Processor {
     SimpleMap protocol;
     
     @Inject
-    @Named("uplink")
-    SimpleMap uplink;
+    @Named("direction")
+    SimpleMap flowDirection;
 
     @Override
     public void process(Exchange e) throws Exception {
@@ -41,10 +41,10 @@ public class RecordProcessor implements Processor {
             return;
         }
         // resolve netflow direction 
-        if (uplink.find(record.get("inif"))) {
+        if (flowDirection.find(record.get("inif"))) {
             // inbound (recv) flow
             record.put("direction", "recv");
-            record.put("uplink", uplink.get(record.get("inif")));
+            record.put("uplink", flowDirection.get(record.get("inif")));
             record.put("downlink", record.remove("outif"));
             record.put("local_ip", IPUtil.ntoa(record.get("dstip")));
             record.put("local_port", record.remove("dstport"));
@@ -52,10 +52,10 @@ public class RecordProcessor implements Processor {
             record.put("remote_ip", IPUtil.ntoa(record.remove("srcip")));
             record.put("remote_port", record.remove("srcport"));
             record.put("asn", record.remove("srcas"));
-        } else if(uplink.find(record.get("outif"))) {
+        } else if(flowDirection.find(record.get("outif"))) {
             // outbound (sent) flow
             record.put("direction", "sent");
-            record.put("uplink", uplink.get(record.remove("outif")));
+            record.put("uplink", flowDirection.get(record.remove("outif")));
             record.put("downlink", record.remove("inif"));
             record.put("local_ip", IPUtil.ntoa(record.get("srcip")));
             record.put("ipaddr", record.remove("srcip"));

@@ -9,11 +9,11 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 @ApplicationScoped
 public class SimpleMapConfiguration {
 
-    @ConfigProperty(name="map.protocol.spec")
+    @ConfigProperty(name="collector.protocol.spec")
     public String protocol;
 
-    @ConfigProperty(name="map.uplink.spec")
-    public String uplink;
+    @ConfigProperty(name="collector.flowDirection.spec")
+    public String flowDirection;
 
     @Produces
     @Named("protocol")
@@ -22,9 +22,9 @@ public class SimpleMapConfiguration {
     }
 
     @Produces
-    @Named("uplink")
-    public SimpleMap getUplinkMap() {
-        return new SimpleMap(uplink);
+    @Named("direction")
+    public SimpleMap getDirectionMap() {
+        return new SimpleMap(flowDirection);
     }
 
 }

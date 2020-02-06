@@ -12,34 +12,31 @@ import static org.apache.camel.builder.PredicateBuilder.and;
 @ApplicationScoped
 public class CollectorRoutes extends RouteBuilder {
 
-    @ConfigProperty(name = "sshKeyFile")
-    String keyFile;
-
-    @ConfigProperty(name = "destination")
+    @ConfigProperty(name = "collector.druid.destination.endpoint")
     String destination;
 
-    @ConfigProperty(name = "destination.dir")
+    @ConfigProperty(name = "collector.druid.basedir")
     String baseDir;
 
-    @ConfigProperty(name = "source")
+    @ConfigProperty(name = "collector.source.endpoint")
     String source;
 
-    @ConfigProperty(name = "indexJson", defaultValue = "resource:classpath:index.json")
+    @ConfigProperty(name = "collector.druid.indexJson", defaultValue = "resource:classpath:index.json")
     String indexTaskTemplate;
 
-    @ConfigProperty(name = "nfdump.cmd")
+    @ConfigProperty(name = "collector.exec.command")
     String nfdumpCmd;
 
-    @ConfigProperty(name = "nfdump.args")
+    @ConfigProperty(name = "collector.exec.args")
     String nfdumpArgs;
 
-    @ConfigProperty(name = "coordinator.url", defaultValue = "http://localhost:8081")
+    @ConfigProperty(name = "collector.druid.coordinator.url", defaultValue = "http://localhost:8081")
     String druid;
 
-    @ConfigProperty(name = "druid.datasource", defaultValue = "nfdump")
+    @ConfigProperty(name = "collector.druid.datasource", defaultValue = "nfdump")
     String druidDataSource;
 
-    @ConfigProperty(name = "datastore.enable", defaultValue = "true")
+    @ConfigProperty(name = "collector.druid.enable", defaultValue = "true")
     String datastoreEnable;
 
     @Override
@@ -49,14 +46,14 @@ public class CollectorRoutes extends RouteBuilder {
         from("direct:nfdump").id("CommandFileSource")
             
             // format agrs 
-            .setHeader("CamelExecCommandArgs").simple(nfdumpArgs + " ${date:now-5m:yyyy/MM/dd}/nfcapd.${date:now-5m:yyyyMMddHHmm}")
+            .setHeader("CamelExecCommandArgs",simple(nfdumpArgs))
             // call commend to export file
-            .log("starting export nfdump for ${date:now-5m:yyyy/MM/dd/yyyyMMddHHmm}")
-            .toF("exec:%s", nfdumpCmd)
+            .log("starting export nfdump for ${header.CamelExecCommandArgs}")
+            //.toF("exec:%s", nfdumpCmd)
             .log("export done");
 
         // collect netflow files from nfdump server
-        fromF("sftp://%s?privateKeyFile=%s&localWorkDirectory=nfdump&delete=true&sortBy=file:name", source, keyFile)
+        from(source)
             .streamCaching("true").id("FileCollector")
             
             // process netflow file records
@@ -94,7 +91,7 @@ public class CollectorRoutes extends RouteBuilder {
             
             // load processed file to druid cluster
             .log("setting next file to:${file:name}")
-            .toF("sftp://%s?privateKeyFile=%s&tempPrefix=tmp/", destination, keyFile)
+            .to(destination)
             .log("delivered to:${header.CamelFileNameProduced}");
 
         // monitor task processing status 

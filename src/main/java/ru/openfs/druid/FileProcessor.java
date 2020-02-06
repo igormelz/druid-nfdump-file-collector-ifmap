@@ -32,22 +32,22 @@ public class FileProcessor implements Processor {
     private static final Logger LOG = LoggerFactory.getLogger(FileProcessor.class);
     private static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
 
-    @ConfigProperty(name = "output.delimiter", defaultValue = ";")
+    @ConfigProperty(name = "collector.output.delimiter", defaultValue = ";")
     String outputDelimiter;
 
-    @ConfigProperty(name = "output.tmpdir", defaultValue = ".tmp")
+    @ConfigProperty(name = "collector.output.tmpdir", defaultValue = ".tmp")
     String outputDir;
 
-    @ConfigProperty(name = "output.header", defaultValue = "true")
+    @ConfigProperty(name = "collector.output.header", defaultValue = "true")
     boolean printHeader;
 
-    @ConfigProperty(name = "output.spec")
+    @ConfigProperty(name = "collector.output.spec")
     String[] outputSpec;
 
-    @ConfigProperty(name = "parser.spec")
+    @ConfigProperty(name = "collector.parser.spec")
     String[] parserSpec;
 
-    @ConfigProperty(name = "parser.delimiter", defaultValue = "\\|")
+    @ConfigProperty(name = "collector.parser.delimiter", defaultValue = "\\|")
     String parserDelimiter;
 
     @Inject

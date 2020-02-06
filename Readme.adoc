@@ -1,0 +1,23 @@
+= OpenFS Druid NFDUMP File Collector
+
+== List all configuration properties
+
+use application properties 
+
+|===
+| name | description | default | type
+| *parser.spec* | define list of parsing columns. Use `%skip` if don't parse column |  | List
+| *parser.delimiter* | Sets the delimiter to use. The default value is \| (vertical line) |  | string
+| *output.spec* | define list of output columns |  | List
+| *output.delimiter* | sets the delimiter for output record. Default value is ; (semicolon) | | string
+| *output.tmpdir* | Directory for store temp processed file | .tmp | string
+| *output.header* | Whether to use the header record in the output | true | bool 
+|source|Set user@host:/path for https://camel.apache.org/components/latest/sftp-component.html[SFTP endpoint] to collect nfdump files||string
+|destination|Set user@host:/path for SFTP endpoint to delivery files||string
+|destination.dir| full path to the destination dir on remote host ||string
+|sshKeyFile|Set the private key file so that the SFTP endpoint can do private key verification||string
+|nfdump.cmd|Set command to export nfdump file|nfdump|string
+|nfdump.args|Sets arguments for nfdump.cmd |-o pipe|string
+|coordinator.url|Druid coordinator url|http://localhost:8081|string
+|indexJson||resource:classpath:index.json|string
+|===

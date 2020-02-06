@@ -11,31 +11,31 @@ import ru.openfs.druid.maptable.MapTableBean;
 @ApplicationScoped
 public class CustomerMapConfiguration {
 
-    @ConfigProperty(name="lookup.customer.mapFileUrl")
+    @ConfigProperty(name="collector.customer.mapFileUrl")
     public String mapFileUrl;
 
-    @ConfigProperty(name="lookup.customer.pattern")
+    @ConfigProperty(name="collector.customer.pattern")
     public String pattern;
 
-    @ConfigProperty(name="lookup.customer.keyColumnIndex")
+    @ConfigProperty(name="collector.customer.keyColumnIndex")
     public String keyColumnIndex;
 
-    @ConfigProperty(name="lookup.customer.dataColumnIndex")
+    @ConfigProperty(name="collector.customer.dataColumnIndex")
     public String dataColumnIndex;
 
-    @ConfigProperty(name="lookup.customer.mapKeys")
+    @ConfigProperty(name="collector.customer.mapKeys")
     public String mapKeys;
 
-    @ConfigProperty(name="lookup.customer.mapValues")
+    @ConfigProperty(name="collector.customer.mapValues")
     public String mapValues;
 
-    @ConfigProperty(name="lookup.customer.valueDefaults")
+    @ConfigProperty(name="collector.customer.valueDefaults")
     String[] valueDefaults;
 
-    @ConfigProperty(name="lookup.customer.useHeaders", defaultValue = "false")
+    @ConfigProperty(name="collector.customer.useHeaders", defaultValue = "false")
     boolean useHeaders;
 
-    @ConfigProperty(name="lookup.customer.reloadInterval")
+    @ConfigProperty(name="collector.customer.reloadInterval")
     long reloadInterval;
 
     @Produces
