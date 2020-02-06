@@ -2,7 +2,7 @@
   "type": "index",
   "spec": {
     "dataSchema": {
-      "dataSource": "nfdump",
+      "dataSource": "${header.datasource}",
       "parser": {
         "type": "string",
         "parseSpec": {
@@ -95,6 +95,6 @@
   "context": {
     "forceTimeChunkLock": true
   },
-  "groupId": "index_append_dpi",
-  "dataSource": "dpi"
+  "groupId": "index_append_${header.datasource}",
+  "dataSource": "${header.datasource}"
 }
