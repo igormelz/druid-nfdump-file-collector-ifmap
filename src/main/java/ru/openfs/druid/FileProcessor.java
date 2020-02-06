@@ -78,12 +78,11 @@ public class FileProcessor implements Processor {
                 try {
                     producer.sendBody("direct:recordProc", record);
                     if (record.containsKey("customer")) {
-                        writeRecord(record, writer);
-                        return record;
-                    } else {
-                        LOG.warn("skip record:{}", record);
-                        return null;
+                        writer.append(outputRecord(record));
+                        return 1;
                     }
+                    LOG.warn("skip record:{}", record);
+                    return null;
                 } catch (IOException e) {
                     LOG.error("IO Exeption:{}", e);
                     return null;
@@ -116,7 +115,8 @@ public class FileProcessor implements Processor {
         return colParsed;
     }
 
-    private void writeRecord(Map<String, String> columns, BufferedWriter writer) throws IOException {
+
+    private String outputRecord(Map<String, String> columns) {
         StringBuilder answer = new StringBuilder();
         for (int i = 0; i < outputSpec.length; i++) {
             if (columns.containsKey(outputSpec[i])) {
@@ -127,8 +127,7 @@ public class FileProcessor implements Processor {
             if (i < outputSpec.length - 1)
                 answer.append(outputDelimiter);
         }
-        writer.write(answer.toString(), 0, answer.length());
-        writer.newLine();
+        return answer.append("\n").toString();
     }
 
     private class CleanupTempFile extends SynchronizationAdapter {
