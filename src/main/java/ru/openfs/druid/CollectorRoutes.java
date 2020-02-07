@@ -48,8 +48,8 @@ public class CollectorRoutes extends RouteBuilder {
             // format agrs 
             .setHeader("CamelExecCommandArgs",simple(nfdumpArgs))
             // call commend to export file
-            .log("starting export nfdump for ${header.CamelExecCommandArgs}")
-            //.toF("exec:%s", nfdumpCmd)
+            .log("starting nfdump with args:[${header.CamelExecCommandArgs}]")
+            .toF("exec:%s", nfdumpCmd)
             .log("export done");
 
         // collect netflow files from nfdump server
