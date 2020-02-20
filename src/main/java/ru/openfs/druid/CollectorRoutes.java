@@ -57,16 +57,16 @@ public class CollectorRoutes extends RouteBuilder {
             .streamCaching("true").id("FileCollector")
             
             // process netflow file records
-            .log("starting process file:${file:name}")
+            .log("setting next file to:${file:name}")
             .process("fileProc")
-            .log("processed ${header.AggregatedCount} records in ${header.AggregatedMillis} ms")
+            .log("aggregated ${header.AggregatedCount} records in ${header.AggregatedMillis} ms")
 
             // compress output file 
             .marshal().gzipDeflater()
             
             // store to local dir 
             .to("file:out?fileName=${file:name.noext}.${date:now:yyyyMMddHHmmss}.gz&tempPrefix=tmp/")
-            .log("wrote processed file to:${header.CamelFileNameProduced}");
+            .log("wrote processed file to:[${header.CamelFileNameProduced}]");
 
         // delivery to druid cluster
         from("file:out?delete=true").autoStartup(datastoreEnable).id("Datastore")
@@ -90,9 +90,8 @@ public class CollectorRoutes extends RouteBuilder {
             .end()
             
             // load processed file to druid cluster
-            .log("setting next file to:${file:name}")
             .to(destination)
-            .log("delivered to:${header.CamelFileNameProduced}");
+            .log("delivered to destination:[${header.CamelFileNameProduced}]");
 
         // monitor task processing status 
         from("seda:monitorTaskStatus").id("DruidTaskMonitor")
@@ -105,7 +104,7 @@ public class CollectorRoutes extends RouteBuilder {
             // parse status 
             .setHeader("status").jsonpath("$.status.status")
             .setHeader("task").jsonpath("$.status.id")
-            .log("${header.status} -- ${header.task}")
+            .log("${header.task} -- [${header.status}]")
             // wait 15 seconds
             .delay(15000)
         .end();
