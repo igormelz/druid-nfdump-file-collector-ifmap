@@ -22,7 +22,7 @@ public class RecordProcessor implements Processor {
     @Inject
     @Named("protocol")
     SimpleMap protocol;
-    
+
     @Inject
     @Named("direction")
     SimpleMap flowDirection;
@@ -40,7 +40,7 @@ public class RecordProcessor implements Processor {
             LOG.warn("Future timestamp:{} for now:{}", timestamp, date);
             return;
         }
-        // resolve netflow direction 
+        // resolve netflow direction
         if (flowDirection.find(record.get("inif"))) {
             // inbound (recv) flow
             record.put("direction", "recv");
@@ -52,7 +52,7 @@ public class RecordProcessor implements Processor {
             record.put("remote_ip", IPUtil.ntoa(record.remove("srcip")));
             record.put("remote_port", record.remove("srcport"));
             record.put("asn", record.remove("srcas"));
-        } else if(flowDirection.find(record.get("outif"))) {
+        } else if (flowDirection.find(record.get("outif"))) {
             // outbound (sent) flow
             record.put("direction", "sent");
             record.put("uplink", flowDirection.get(record.remove("outif")));
@@ -68,7 +68,19 @@ public class RecordProcessor implements Processor {
             e.setProperty(Exchange.ROUTE_STOP, true);
             return;
         }
+        
+        // mapping proto to protocol name
         record.put("proto", protocol.get(record.get("proto")));
+
+        // format tcp,udp port as "port/proto"
+        if (record.get("proto").equalsIgnoreCase("udp") || record.get("proto").equalsIgnoreCase("tcp")) {
+            record.put("local_port", record.get("local_port") + "/" + record.get("proto"));
+            record.put("remote_port", record.get("remote_port") + "/" + record.get("proto"));
+        } else {
+            // set default value 
+            record.put("local_port","0");
+            record.put("remote_port","0");
+        }
     }
 
 }
