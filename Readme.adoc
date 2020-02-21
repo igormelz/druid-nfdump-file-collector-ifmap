@@ -6,18 +6,22 @@ use application properties
 
 |===
 | name | description | default | type
-| *parser.spec* | define list of parsing columns. Use `%skip` if don't parse column |  | List
-| *parser.delimiter* | Sets the delimiter to use. The default value is \| (vertical line) |  | string
-| *output.spec* | define list of output columns |  | List
-| *output.delimiter* | sets the delimiter for output record. Default value is ; (semicolon) | | string
-| *output.tmpdir* | Directory for store temp processed file | .tmp | string
-| *output.header* | Whether to use the header record in the output | true | bool 
-|source|Set user@host:/path for https://camel.apache.org/components/latest/sftp-component.html[SFTP endpoint] to collect nfdump files||string
+| *collector.parser.spec* | define list of parsing columns. Use `%skip` if don't parse column |  | List
+| *collector.parser.delimiter* | Sets the delimiter to use. The default value is \| (vertical line) |  | string
+| *collector.output.spec* | define list of output columns |  | List
+| *collector.output.delimiter* | sets the delimiter for output record. Default value is ; (semicolon) | | string
+| *collector.output.tmpdir* | Directory for store temp processed file | .tmp | string
+| *collector.output.header* | Whether to use the header record in the output | true | bool 
+| *collector.source.endpoint* | Set Camel endpoint to source files (i.e. file://, sftp://,...) ||string
 |destination|Set user@host:/path for SFTP endpoint to delivery files||string
 |destination.dir| full path to the destination dir on remote host ||string
 |sshKeyFile|Set the private key file so that the SFTP endpoint can do private key verification||string
-|nfdump.cmd|Set command to export nfdump file|nfdump|string
-|nfdump.args|Sets arguments for nfdump.cmd |-o pipe|string
-|coordinator.url|Druid coordinator url|http://localhost:8081|string
-|indexJson||resource:classpath:index.json|string
+| *collector.exec.cmd* |Set shell command to export nfdump file|nfdump|string
+| *collector.exec.args* |Sets arguments for exec.cmd |-o pipe|string
+| *collector.druid.coordinator.url* |Druid coordinator url|http://localhost:8081|string
+| *collector.druid.destination.endpoint* | Set Camel compoment to delivery for ingesting ||string
+| *collector.druid.basedir* | Set local path to ingesting files ||string
+| *collector.druid.datasource* | Set Druid datsource name | nfdump |string
+| *collector.druid.indexJson* |  Set Camel external resource "resource:scheme:location" for Druid ingestion spec | resource:classpath:index.json |string
+| *collector.protocol.spec* | SimpleMap spec ```key,value[,key,value]*``` for mapping proto to protocol name | 1,icmp,4,ipv4,6,tcp,17,udp,41,ipv6,47,gre,50,esp |string
 |===
