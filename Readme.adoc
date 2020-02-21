@@ -2,26 +2,21 @@
 
 == List all configuration properties
 
-use application properties 
-
 |===
-| name | description | default | type
-| *collector.parser.spec* | define list of parsing columns. Use `%skip` if don't parse column |  | List
-| *collector.parser.delimiter* | Sets the delimiter to use. The default value is \| (vertical line) |  | string
-| *collector.output.spec* | define list of output columns |  | List
-| *collector.output.delimiter* | sets the delimiter for output record. Default value is ; (semicolon) | | string
-| *collector.output.tmpdir* | Directory for store temp processed file | .tmp | string
-| *collector.output.header* | Whether to use the header record in the output | true | bool 
-| *collector.source.endpoint* | Set Camel endpoint to source files (i.e. file://, sftp://,...) ||string
-|destination|Set user@host:/path for SFTP endpoint to delivery files||string
-|destination.dir| full path to the destination dir on remote host ||string
-|sshKeyFile|Set the private key file so that the SFTP endpoint can do private key verification||string
-| *collector.exec.cmd* |Set shell command to export nfdump file|nfdump|string
-| *collector.exec.args* |Sets arguments for exec.cmd |-o pipe|string
-| *collector.druid.coordinator.url* |Druid coordinator url|http://localhost:8081|string
-| *collector.druid.destination.endpoint* | Set Camel compoment to delivery for ingesting ||string
-| *collector.druid.basedir* | Set local path to ingesting files ||string
-| *collector.druid.datasource* | Set Druid datsource name | nfdump |string
-| *collector.druid.indexJson* |  Set Camel external resource "resource:scheme:location" for Druid ingestion spec | resource:classpath:index.json |string
-| *collector.protocol.spec* | SimpleMap spec ```key,value[,key,value]*``` for mapping proto to protocol name | 1,icmp,4,ipv4,6,tcp,17,udp,41,ipv6,47,gre,50,esp |string
+| name | description 
+| *collector.parser.spec* | define list of parsing columns. Use `%skip` if don't parse column.
+| *collector.parser.delimiter* | Sets the delimiter to use. The default value is \| (vertical line) 
+| *collector.output.spec* | define list of output columns 
+| *collector.output.delimiter* | sets the delimiter for output record. Default value is ; (semicolon) 
+| *collector.output.tmpdir* | Directory for store temp processed file
+| *collector.output.header* | Whether to use the header record in the output 
+| *collector.source.endpoint* | Set Camel endpoint to source files (i.e. file://, sftp://,...) 
+| *collector.exec.cmd* |Set shell command to export nfdump file
+| *collector.exec.args* |Sets arguments for exec.cmd
+| *collector.druid.coordinator.url* |Druid coordinator url
+| *collector.druid.destination.endpoint* | Set Camel compoment to delivery for ingesting 
+| *collector.druid.basedir* | Set local path to ingesting files 
+| *collector.druid.datasource* | Set Druid datsource name 
+| *collector.druid.indexJson* |  Set Camel external resource "resource:scheme:location" for ingestion spec
+| *collector.protocol.spec* | SimpleMap spec ```key,value[,key,value]*``` for mapping proto to protocol name
 |===
